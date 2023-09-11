@@ -15,7 +15,10 @@ startGame.addEventListener("click", (e) => {
 
 const scoreBoardContainer = document.querySelector("#scoreboard");
 const scoreBoard = scoreBoardContainer.firstElementChild;
-const tries = scoreBoard.childNodes;
+
+const tries = scoreBoard.children;
+const numberOfTries = tries.length
+
 // const scoreBoardTry = scoreBoard.firstElementChild;
 let missed = 0;
 
@@ -192,15 +195,21 @@ function winReset(){
         });
     });
 
+    const leftOverTries = numberOfTries - missed;
+    if(leftOverTries > 0) {
+        console.log(`missed: ${missed}`);
+        console.log(`number of tries: ${numberOfTries}`);
+        console.log(`Leftover tries: ${leftOverTries}`);
+        resetTries(missed + 1);
+    }
+
     missed = 0;
 }
 
 function loseReset(){
-    const listItems = [...phraseUl.childNodes];
+    const listItems = [...phraseUl.children];
     listItems.forEach((li) => {
-        if(li.classList.contains("show")){
-            phraseUl.removeChild(li);
-        }
+        phraseUl.removeChild(li);
     })
     
     // Remove all the listItems classes of letter
@@ -217,5 +226,21 @@ function loseReset(){
         });
     });
 
+    resetTries(numberOfTries + 1);
     missed = 0;
+}
+
+function resetTries(length) {
+    for(let i = 1; i < length; i++) {
+        const li = document.createElement("li");
+        li.classList.add("tries");
+
+        const image = document.createElement("img");
+        image.src = "/images/liveHeart.png";
+        image.style.width = "30px"
+        image.style.height = "35px"
+        
+        li.append(image);
+        scoreBoard.append(li)
+    }
 }
