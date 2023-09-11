@@ -3,91 +3,219 @@ const qwerty = document.getElementById("qwerty");
 const phraseContainer = document.getElementById("phrase");
 const phraseUl = phraseContainer.firstElementChild;
 
-const overlay = document.querySelector("#overlay")
+const overlay = document.querySelector("#overlay");
+const overlayHeading = document.querySelector(".title")
+
 const startGame = document.querySelector(".btn__reset");
 startGame.addEventListener("click", (e) => {
-    overlay.style.display = "none"
+    overlay.classList.remove("win");
+    overlay.classList.add("start");
+  overlay.style.display = "none";
 });
 
-const missed = 0;
+const scoreBoardContainer = document.querySelector("#scoreboard");
+const scoreBoard = scoreBoardContainer.firstElementChild;
+const tries = scoreBoard.childNodes;
+// const scoreBoardTry = scoreBoard.firstElementChild;
+let missed = 0;
+
 const phrases = [
-  "A nut for a jar of tuna",
-  "Was it a car or a cat I saw",
-  "My six pack is protected by a layer of fat",
-  "Never ask a starfish for directions",
-  "Never judge a book by its cover",
+  "Sierra Leone",
+  "Liberia",
+  "Guinea",
+  "Senegal",
+  "Ghana",
+  "Nigeria",
 ];
 
-// Create a getRandomPhraseAsArray function.
+/**
+ * Create an getRandomPhraseAsArray function
+ * @param {*} arr
+ */
 function getRandomPhraseAsArray(arr) {
-    //A random number that's between 0 and array.length - 1
-    const randomNumber = Math.floor(Math.random() * (arr.length - 1));
-    
-    // Use randomNumber to get a random index, 
-    // and the random index to get a random phrase.
-    const phrase = arr[randomNumber];
-  
-    //Taking sentences and turning it into letters including spaces, etc
-    //Turn phrase from string to an array[] of characters, using split()
-    const phraseArray = phrase.split("");
+  //A random number that's between 0 and array.length - 1
+  const randomNumber = Math.floor(Math.random() * (arr.length - 1));
 
-    // return character array
-    return phraseArray;
-  }
+  // Use randomNumber to get a random index,
+  // and the random index to get a random phrase.
+  const phrase = arr[randomNumber];
 
-// Create an addPhraseToDisplay function 
-function addPhraseToDisplay(arr){
-   
-    // that loops through an array of characters
-    for( let i = 0; i < arr.length; i++){
-        //Create an empty <li></li> using the DOM
-        const listItem = document.createElement("li");
+  //Taking sentences and turning it into letters including spaces, etc
+  //Turn phrase from string to an array[] of characters, using split()
+  const phraseArray = phrase.split("");
 
-        //Store the array element inside the <li></li> as text
-        listItem.textContent = arr[i].toLowerCase();
+  // return character array
+  return phraseArray;
+}
 
-        //Character in the array is not a space.
-        if(arr[i] !== " "){
-            //Add the class “letter” to the list item
-            listItem.classList.add("letter")
-        };
+/**
+ * Create an addPhraseToDisplay function
+ * @param {*} arr
+ */
+function addPhraseToDisplay(arr) {
+  // that loops through an array of characters
+  for (let i = 0; i < arr.length; i++) {
+    //Create an empty <li> using the DOM
+    const listItem = document.createElement("li");
 
-        // Add the <li></li> as a child of the <ul></ul> through the DOM
-        phraseUl.append(listItem);
+    //Store the array element inside the <li> as text
+    listItem.textContent = arr[i].toLowerCase();
+
+    //Character in the array is not a space.
+    if (arr[i] !== " ") {
+      //Add the class “letter” to the list item
+      listItem.classList.add("letter");
     }
 
+    // Add the <li> as a child of the <ul> through the DOM
+    phraseUl.append(listItem);
+  }
 }
 
 const randomPhrase = getRandomPhraseAsArray(phrases);
 addPhraseToDisplay(randomPhrase);
 
-// Create a checkLetter function.
-function checkLetter(btn){
-    // Create variable with a class of “letter”
-    const listItems = phraseUl.childNodes;
+/**
+ * Create a checkLetter function.
+ * @param {*} btn
+ * @returns
+ */
+function checkLetter(btn) {
+  // Create variable with a class of “letter”
+  const listItems = phraseUl.childNodes;
+  console.log(listItems);
 
-//    store the matching letter inside of a variable,
-    let matchingLetter = null;
-  
-  // loop over the letters 
-  for( let i = 0; i < listItems.length; i++ ){
-      const listItem = listItems[i];
-  
-      // If there’s a match,add the “show” class
-      //  to the list item containing that letter, 
-      if(btn.textContent === listItem.textContent ){
-        listItem.classList.add("show")
-  
+  // Store the matching letter inside of a variable,
+  let matchingLetter = null;
+
+  // loop over the letters
+  for (let i = 0; i < listItems.length; i++) {
+    const listItem = listItems[i];
+    console.log(listItem);
+
+    // If there’s a match,add the “show” class
+    //  to the list item containing that letter,
+    if (btn.textContent === listItem.textContent) {
+      listItem.classList.add("show");
+      console.log(`Correct Letter = ${listItem.textContent}`);
+    //   console.log(listItems);
+
       // store the matching letter inside of a variable
-         matchingLetter = btn.textContent
-  
-      }
-    //   return that letter.
-      return matchingLetter;
+      matchingLetter = btn.textContent;
+    }
   }
+
+  //   return that letter.
+  return matchingLetter;
 }
 
-  const qButton = qwerty.firstElementChild.firstElementChild;
-  console.log(qButton);
-//   console.log(qButton.textContent);
-  checkLetter(qButton);
+qwerty.addEventListener("click", (e) => {
+  // event delegation to listen only to button events.
+  if (e.target.tagName === "BUTTON") {
+    const clickedBtn = e.target;
+    // add the “chosen” class to button
+    clickedBtn.classList.add("chosen");
+
+    // set “disabled” attribute to true
+    // so the same letter can’t be chosen twice.
+    clickedBtn.disabled = true;
+
+    const letterFound = checkLetter(clickedBtn);
+    console.log(letterFound);
+
+    // If player guessed the wrong letter
+    // remove one of the tries from the scoreboard.
+    if (letterFound === null) {
+      const scoreBoardTry = scoreBoard.firstElementChild;
+      scoreBoard.removeChild(scoreBoardTry);
+
+      // changing a liveHeart image to a lostHeart image.
+      scoreBoardTry.firstElementChild.src = "/images/lostHeart.png";
+      missed++;
+    }
+
+    checkWin();
+  }
+
+});
+
+// Create a checkWin function
+function checkWin(){
+    // list items
+    const listItems = [...phraseUl.childNodes];
+
+    // Create variable with a class of “show”
+    const letteredListItems = listItems.filter((li) => li.classList.contains("letter"));
+    // console.log(`letter class: ${letteredListItems}`);
+
+    const shownListItems = listItems.filter((li) => li.classList.contains("show"));
+    // console.log(`show class: ${shownListItems}`);
+
+    // check if player has chosen all correct letters
+   if(letteredListItems.length == shownListItems.length){
+    overlay.classList.remove("start");
+    overlay.classList.add("win");
+    overlayHeading.textContent = "Congratulations! you have won the game";
+    overlay.style.display = "flex";
+    winReset();
+   }
+
+   console.log(missed);
+   if(missed > 4){
+
+    overlay.classList.add("lose");
+    overlayHeading.textContent = "Sorry! you lose the game";
+    overlay.style.display = "flex";
+    loseReset();
+   }
+}
+
+function winReset(){
+    const listItems = [...phraseUl.childNodes];
+    listItems.forEach((li) => {
+        if(li.classList.contains("show")){
+            phraseUl.removeChild(li);
+        }
+    })
+    
+    // Remove all the listItems classes of letter
+    // Get a new random phrase
+    const randomPhrase = getRandomPhraseAsArray(phrases);
+    addPhraseToDisplay(randomPhrase);
+
+    //Reset the keyboard?
+    const keyRows = document.querySelectorAll(".keyrow")
+    keyRows.forEach((keyRow) => {
+        [...keyRow.children].forEach((keyBtn) => {
+            keyBtn.classList.remove("chosen");
+            keyBtn.disabled = false;
+        });
+    });
+
+    missed = 0;
+}
+
+function loseReset(){
+    const listItems = [...phraseUl.childNodes];
+    listItems.forEach((li) => {
+        if(li.classList.contains("show")){
+            phraseUl.removeChild(li);
+        }
+    })
+    
+    // Remove all the listItems classes of letter
+    // Get a new random phrase
+    const randomPhrase = getRandomPhraseAsArray(phrases);
+    addPhraseToDisplay(randomPhrase);
+
+    //Reset the keyboard?
+    const keyRows = document.querySelectorAll(".keyrow")
+    keyRows.forEach((keyRow) => {
+        [...keyRow.children].forEach((keyBtn) => {
+            keyBtn.classList.remove("chosen");
+            keyBtn.disabled = false;
+        });
+    });
+
+    missed = 0;
+}
