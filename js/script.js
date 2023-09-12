@@ -31,6 +31,13 @@ const phrases = [
   "Nigeria",
 ];
 
+function successFailureBtn(){
+//Change the "Start Game" Button through the DOM
+startGame.style.width = "120px"
+startGame.style.height = "50px"
+startGame.style.padding = "12px"
+startGame.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)"
+    }
 /**
  * Retrieves a random phrase from an array and returns
  * that phrase as a character array.
@@ -177,12 +184,13 @@ function checkWin(){
         h3.style.fontWeight = "700"
 
         //Change the "Start Game" Button through the DOM
-        startGame.style.width = "120px"
-        startGame.style.height = "50px"
-        startGame.style.padding = "12px"
-        startGame.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)"
+        successFailureBtn()
         startGame.textContent = "Play Again";
-        startGame.addEventListener("click", winReset);
+        startGame.addEventListener("click", () => {
+           winReset() 
+           console.log(overlay);
+           overlay.removeChild(h3)
+        });
     }, 3000);
    }
    // check if player has chosen all wrong letters
@@ -190,23 +198,22 @@ function checkWin(){
     overlay.classList.add("lose");
     overlay.style.display = "flex";
 
-        // adding <h3></h3> heading 
-        const h3 = document.createElement("h3");
-        console.log(h3);
-        overlay.appendChild(h3);
-        h3.textContent = "You Lose!"
-        h3.style.fontSize = "50px"
-        h3.style.fontWeight = "700"
+        // adding <h4></h4> heading 
+        const h4 = document.createElement("h4");
+        overlay.appendChild(h4);
+        h4.textContent = "You Lose!"
+        h4.style.fontSize = "50px"
+        h4.style.fontWeight = "700"
 
     //Change the "Start Game" Button through the DOM
-    //Change the "Start Game" Button through the DOM
-    startGame.style.width = "120px"
-    startGame.style.height = "50px"
-    startGame.style.padding = "12px"
-    startGame.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)"
+    successFailureBtn()
     startGame.textContent = "Try Again";
-    startGame.addEventListener("click", loseReset);
-   }
+    startGame.addEventListener("click", () => {
+        loseReset()
+        overlay.removeChild(h4)
+    });
+    
+    }
 }
 
 function winReset(){
