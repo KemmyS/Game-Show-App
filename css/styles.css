@@ -158,6 +158,9 @@ button {
 .start a {
   color: var(--color-win);
 }
+.game-over{
+display: none;
+}
 
 .win {
   background-color: var(--color-win);
