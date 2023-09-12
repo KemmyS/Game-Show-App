@@ -6,7 +6,10 @@ const phraseUl = phraseContainer.firstElementChild;
 const overlay = document.querySelector("#overlay");
 const overlayHeading = document.querySelector(".title");
 
-const loseWinBtn = document.querySelector(".lose_win_btn");
+//found 2 bugs
+// After 3 wins, the previous phrase is combined with current phrase
+// After 3 losses the hearts/tries are doubled
+
 const startGame = document.querySelector(".btn__reset");
 startGame.addEventListener("click", (e) => {
   overlay.classList.remove("win");
@@ -31,20 +34,13 @@ const phrases = [
   "Ghana",
   "Nigeria",
 ];
-loseWinBtn.style.display = "none"
 
-function loseWinBtnDisplay(){
-    loseWinBtn.style.display = "flex"
-      loseWinBtn.style.justifyContent = "center"
-      loseWinBtn.style.margin = "50px auto";
-}
 function successFailureBtn() {
-  //Change the "Start Game" Button through the DOM
-  loseWinBtn.style.color = "green"
-  loseWinBtn.style.width = "150px";
-  loseWinBtn.style.height = "50px";
-  loseWinBtn.style.padding = "12px";
-  loseWinBtn.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)";
+  startGame.style.color = "green";
+  startGame.style.width = "150px";
+  startGame.style.height = "50px";
+  startGame.style.padding = "12px";
+  startGame.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)";
 }
 
 /**
@@ -191,14 +187,9 @@ function checkWin() {
       gameOverHeading.style.fontWeight = "700";
 
       //Change the "Start Game" Button through the DOM
-      startGame.style.display = "none"
-      loseWinBtnDisplay()
       successFailureBtn();
-      loseWinBtn.textContent = "Play Again"
-      loseWinBtn.addEventListener("click", () => {
-        winReset()
-        overlay.style.display = "none"
-      });
+      startGame.textContent = "Play Again";
+      startGame.addEventListener("click", winReset);
     }, 2000);
   }
 
@@ -214,14 +205,9 @@ function checkWin() {
     gameOverHeading.style.fontWeight = "700";
 
     //Change the "Start Game" Button through the DOM
-    startGame.style.display = "none"
     successFailureBtn();
-    loseWinBtnDisplay();
-    loseWinBtn.textContent = "Try Again";
-    loseWinBtn.addEventListener("click", () => {
-        loseReset()
-        overlay.style.display = "none"
-      });
+    startGame.textContent = "Try Again";
+    startGame.addEventListener("click", loseReset);
   }
 }
 
