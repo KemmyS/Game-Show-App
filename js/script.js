@@ -197,9 +197,7 @@ function checkWin() {
       loseWinBtn.textContent = "Play Again"
       loseWinBtn.addEventListener("click", () => {
         winReset()
-        overlay.classList.remove("win");
-        overlay.classList.add("start");
-        overlay.style.display = "none";
+        overlay.style.display = "none"
       });
     }, 2000);
   }
@@ -222,9 +220,7 @@ function checkWin() {
     loseWinBtn.textContent = "Try Again";
     loseWinBtn.addEventListener("click", () => {
         loseReset()
-        overlay.classList.remove("win");
-        overlay.classList.add("start");
-        overlay.style.display = "none";
+        overlay.style.display = "none"
       });
   }
 }
