@@ -162,23 +162,50 @@ function checkWin(){
 
     // check if player has chosen all correct letters
    if(letteredListItems.length == shownListItems.length){
-    overlay.classList.remove("start");
-    overlay.classList.add("win");
-    overlayHeading.textContent = "Congratulations! you have won the game";
-    overlay.style.display = "flex";
 
-    // call the winReset() function
-    winReset();
+    setTimeout(() => {
+        overlay.classList.remove("start");
+        overlay.classList.add("win");
+        overlay.style.display = "flex";
 
+         // adding <h3></h3> heading 
+        const h3 = document.createElement("h3");
+        console.log(h3);
+        overlay.appendChild(h3);
+        h3.textContent = "You Won!";
+        h3.style.fontSize = "50px"
+        h3.style.fontWeight = "700"
+
+        //Change the "Start Game" Button through the DOM
+        startGame.style.width = "120px"
+        startGame.style.height = "50px"
+        startGame.style.padding = "12px"
+        startGame.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)"
+        startGame.textContent = "Play Again";
+        startGame.addEventListener("click", winReset);
+    }, 3000);
    }
    // check if player has chosen all wrong letters
    if(missed > 4){
     overlay.classList.add("lose");
-    overlayHeading.textContent = "Sorry! you lose the game";
     overlay.style.display = "flex";
 
-    // call the loseReset() function
-    loseReset();
+        // adding <h3></h3> heading 
+        const h3 = document.createElement("h3");
+        console.log(h3);
+        overlay.appendChild(h3);
+        h3.textContent = "You Lose!"
+        h3.style.fontSize = "50px"
+        h3.style.fontWeight = "700"
+
+    //Change the "Start Game" Button through the DOM
+    //Change the "Start Game" Button through the DOM
+    startGame.style.width = "120px"
+    startGame.style.height = "50px"
+    startGame.style.padding = "12px"
+    startGame.style.boxShadow = "5px 5px 5px 0px rgba(176, 164, 164, 1)"
+    startGame.textContent = "Try Again";
+    startGame.addEventListener("click", loseReset);
    }
 }
 

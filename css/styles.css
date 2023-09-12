@@ -86,15 +86,28 @@ button {
   color: transparent;
   background: var(--color-neutral-light);
   border-radius: 5px;
+ 
 }
 
 .space {
   width: 15px;
 }
 
+@keyframes slide {
+  from {
+     transform:rotate(-30deg) translateX(-100%);
+     opacity: 0;
+  }
+  to {
+    transform:rotate(0deg) translateX(0%);
+     opacity: 1;
+  }
+}
+
 .show {
   color: #000;
   background-color: #76CE82;
+  animation: slide 1000ms;
 }
 
 /* Keyboard */
