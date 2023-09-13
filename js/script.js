@@ -142,18 +142,22 @@ qwerty.addEventListener("click", (e) => {
     // call the checkLetter function and pass clickedBtn
     const letterFound = checkLetter(clickedBtn);
 
+    const scoreBoardTries = scoreBoard.children;
+      if (letterFound === null) {
+
+        if(missed < 5) {
+          const scoreBoardTryImg = scoreBoardTries[missed].firstElementChild;
+          console.log(scoreBoardTryImg);
+          // scoreBoard.removeChild(scoreBoardTries);
+          // change liveHeart image to a lostHeart image.
+          scoreBoardTryImg.src = "/images/lostHeart.png";
+          //   increment the missed counter
+        }
+        missed++;
+      }
     // If player guessed the wrong letter
     // remove one of the tries from the scoreboard.
-    if (letterFound === null) {
-      const scoreBoardTry = scoreBoard.firstElementChild;
-      scoreBoard.removeChild(scoreBoardTry);
-
-      // change liveHeart image to a lostHeart image.
-      scoreBoardTry.firstElementChild.src = "/images/lostHeart.png";
-
-      //   increment the missed counter
-      missed++;
-    }
+    
 
     checkWin();
   }
@@ -177,6 +181,7 @@ function checkWin() {
   if (letteredListItems.length == shownListItems.length) {
     setTimeout(() => {
       overlay.classList.remove("start");
+      overlay.classList.remove("lose");
       overlay.classList.add("win");
       overlay.style.display = "flex";
 
@@ -195,7 +200,9 @@ function checkWin() {
 
   // check if player has chosen all wrong letters
   if (missed > 4) {
+    overlay.classList.remove("win");
     overlay.classList.add("lose");
+
     overlay.style.display = "flex";
 
     gameOverHeading.textContent = "You lose!";
@@ -272,16 +279,12 @@ function loseReset() {
 }
 
 function resetTries(length) {
-  for (let i = 1; i < length; i++) {
-    const li = document.createElement("li");
-    li.classList.add("tries");
+  const scoreBoardTries = scoreBoard.children;
 
-    const image = document.createElement("img");
-    image.src = "/images/liveHeart.png";
-    image.style.width = "30px";
-    image.style.height = "35px";
-
-    li.append(image);
-    scoreBoard.append(li);
+  for (let i = 0; i < length; i++) {
+    const scoreBoardTry = scoreBoardTries[i];
+    if(scoreBoardTry) {
+      scoreBoardTry.firstElementChild.src = "/images/liveHeart.png";
+    }
   }
 }
