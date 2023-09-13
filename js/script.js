@@ -6,9 +6,6 @@ const phraseUl = phraseContainer.firstElementChild;
 const overlay = document.querySelector("#overlay");
 const overlayHeading = document.querySelector(".title");
 
-//found 2 bugs
-// After 3 wins, the previous phrase is combined with current phrase
-// After 3 losses the hearts/tries are doubled
 
 const startGame = document.querySelector(".btn__reset");
 startGame.addEventListener("click", (e) => {
@@ -83,6 +80,8 @@ function addPhraseToDisplay(arr) {
     if (arr[i] !== " ") {
       //Add the class “letter” to the list item
       listItem.classList.add("letter");
+    } else {
+      listItem.classList.add("space");
     }
 
     // Add the <li> as a child of the <ul> through the DOM
@@ -143,22 +142,18 @@ qwerty.addEventListener("click", (e) => {
     const letterFound = checkLetter(clickedBtn);
 
     const scoreBoardTries = scoreBoard.children;
-      if (letterFound === null) {
-
-        if(missed < 5) {
-          const scoreBoardTryImg = scoreBoardTries[missed].firstElementChild;
-          console.log(scoreBoardTryImg);
-          // scoreBoard.removeChild(scoreBoardTries);
-          // change liveHeart image to a lostHeart image.
-          scoreBoardTryImg.src = "/images/lostHeart.png";
-          //   increment the missed counter
-        }
-        missed++;
+    if (letterFound === null) {
+      if (missed < 5) {
+        const scoreBoardTryImg = scoreBoardTries[missed].firstElementChild;
+        // scoreBoard.removeChild(scoreBoardTries);
+        // change liveHeart image to a lostHeart image.
+        scoreBoardTryImg.src = "/images/lostHeart.png";
+        //   increment the missed counter
       }
+      missed++;
+    }
     // If player guessed the wrong letter
     // remove one of the tries from the scoreboard.
-    
-
     checkWin();
   }
 });
@@ -176,36 +171,25 @@ function checkWin() {
   const shownListItems = listItems.filter((li) =>
     li.classList.contains("show")
   );
-
   // check if player has chosen all correct letters
   if (letteredListItems.length == shownListItems.length) {
-    setTimeout(() => {
-      overlay.classList.remove("start");
-      overlay.classList.remove("lose");
-      overlay.classList.add("win");
-      overlay.style.display = "flex";
-
-      gameOverHeading.textContent = "You Won!";
-      gameOverHeading.style.display = "flex";
-      gameOverHeading.style.margin = "20px auto";
-      gameOverHeading.style.fontSize = "50px";
-      gameOverHeading.style.fontWeight = "700";
-
-      //Change the "Start Game" Button through the DOM
-      successFailureBtn();
-      startGame.textContent = "Play Again";
-      startGame.addEventListener("click", winReset);
-    }, 2000);
+    playerWins();
   }
 
   // check if player has chosen all wrong letters
   if (missed > 4) {
-    overlay.classList.remove("win");
-    overlay.classList.add("lose");
+    playerLoses();
+  }
+}
 
+function playerWins() {
+  setTimeout(() => {
+    overlay.classList.remove("start");
+    overlay.classList.remove("lose");
+    overlay.classList.add("win");
     overlay.style.display = "flex";
 
-    gameOverHeading.textContent = "You lose!";
+    gameOverHeading.textContent = "You Won!";
     gameOverHeading.style.display = "flex";
     gameOverHeading.style.margin = "20px auto";
     gameOverHeading.style.fontSize = "50px";
@@ -213,19 +197,38 @@ function checkWin() {
 
     //Change the "Start Game" Button through the DOM
     successFailureBtn();
-    startGame.textContent = "Try Again";
-    startGame.addEventListener("click", loseReset);
-  }
+    startGame.textContent = "Play Again";
+    startGame.addEventListener("click", () => {
+      reset(numberOfTries - missed);
+    });
+  }, 2000);
 }
 
-function winReset() {
+function playerLoses() {
+  overlay.classList.remove("win");
+  overlay.classList.add("lose");
+
+  overlay.style.display = "flex";
+
+  gameOverHeading.textContent = "You lose!";
+  gameOverHeading.style.display = "flex";
+  gameOverHeading.style.margin = "20px auto";
+  gameOverHeading.style.fontSize = "50px";
+  gameOverHeading.style.fontWeight = "700";
+
+  //Change the "Start Game" Button through the DOM
+  successFailureBtn();
+  startGame.textContent = "Try Again";
+  startGame.addEventListener("click", () => {
+    reset(numberOfTries);
+    overlay.classList.remove("lose");
+  });
+}
+
+function reset(leftOverTries) {
   // Remove all the listItems classes of letter
   const listItems = [...phraseUl.childNodes];
-  listItems.forEach((li) => {
-    if (li.classList.contains("show")) {
-      phraseUl.removeChild(li);
-    }
-  });
+  listItems.forEach((li) => phraseUl.removeChild(li));
 
   // Get a new random phrase by
   //  by calling the addPhraseToDisplay function
@@ -243,47 +246,21 @@ function winReset() {
   });
 
   //Reset the number of tries
-  const leftOverTries = numberOfTries - missed;
   if (leftOverTries > 0) {
-    resetTries(missed + 1);
+    resetTries(missed);
+  } else {
+    resetTries(numberOfTries);
   }
 
-  missed = 0;
-}
-
-function loseReset() {
-  // Remove all the listItems classes of letter
-  const listItems = [...phraseUl.children];
-  listItems.forEach((li) => {
-    phraseUl.removeChild(li);
-  });
-
-  // Get a new random phrase by
-  //  by calling the addPhraseToDisplay function
-  // and pass randomPhrase function;
-  const randomPhrase = getRandomPhraseAsArray(phrases);
-  addPhraseToDisplay(randomPhrase);
-
-  //Reset the keyboard
-  const keyRows = document.querySelectorAll(".keyrow");
-  keyRows.forEach((keyRow) => {
-    [...keyRow.children].forEach((keyBtn) => {
-      keyBtn.classList.remove("chosen");
-      keyBtn.disabled = false;
-    });
-  });
-
-  //Reset the number of tries
-  resetTries(numberOfTries + 1);
   missed = 0;
 }
 
 function resetTries(length) {
   const scoreBoardTries = scoreBoard.children;
 
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i <= length; i++) {
     const scoreBoardTry = scoreBoardTries[i];
-    if(scoreBoardTry) {
+    if (scoreBoardTry) {
       scoreBoardTry.firstElementChild.src = "/images/liveHeart.png";
     }
   }
