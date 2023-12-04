@@ -24,12 +24,12 @@ const numberOfTries = tries.length;
 let missed = 0;
 
 const phrases = [
-  "Sierra Leone",
-  "Liberia",
-  "Guinea",
-  "Senegal",
-  "Ghana",
-  "Nigeria",
+  "No pain no gain",
+  "See eye to eye",
+  "Speak of the devil",
+  "Break a leg",
+  "A piece of cake",
+  "The last straw",
 ];
 
 function successFailureBtn() {
